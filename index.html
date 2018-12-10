@@ -1,14 +1,204 @@
-<html>
-  <body>
-    <p id='server-time'></p>
-    <script>
-      var HOST = location.origin.replace(/^http/, 'ws')
-      var ws = new WebSocket(HOST);
-      var el = document.getElementById('server-time');
 
-      ws.onmessage = function (event) {
-        el.innerHTML = 'Server time: ' + event.data;
-      };
-    </script>
-  </body>
-</html>
+<html>
+        <head>
+        
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+        <link href="style.css" rel="stylesheet"/>
+        
+        <!------ Include the above in your HEAD tag ---------->
+        <style>
+        
+        </style>
+        </head>
+        <body>
+        <div class="container text-center">
+            <div class="row">
+                <h2>Click open chat box</h2>
+                <h4>Click Here</h4>
+                <div class="round hollow text-center">
+                <a href="#" id="addClass"><span class="glyphicon glyphicon-comment"></span> Open in chat </a>
+                </div>
+                
+                
+                 
+            </div>
+        </div>
+        
+        
+        <div class="chat-box chat-popup" id="qnimate">
+                      <div class="popup-head">
+                        <div class="popup-head-left pull-left" id="window_name"> </div>
+                              <div class="popup-head-right pull-right">
+                                <div class="btn-group">
+                                              <button class="chat-header-button" data-toggle="dropdown" type="button" aria-expanded="false">
+                                               <i class="glyphicon glyphicon-cog"></i> </button>
+                                              <ul role="menu" class="dropdown-menu pull-right">
+                                                <li><a href="#">Media</a></li>
+                                                <li><a href="#">Block</a></li>
+                                                <li><a href="#">Clear Chat</a></li>
+                                                <li><a href="#">Email Chat</a></li>
+                                              </ul>
+                                </div>
+                                
+                                <button data-widget="remove" id="removeClass" class="chat-header-button pull-right" type="button"><i class="glyphicon glyphicon-off"></i></button>
+                              </div>
+                      </div>
+                    <div class="popup-messages" id="log"> 
+                    
+                    
+                    
+              
+                         </div>
+                            <div class="popup-messages-footer">
+                                <input type="text" id="status_message" placeholder="Type a message..." />
+                                <div class="btn-footer">
+                                
+                                <button id="msgSend" class="btn btn-info pull-right">Send</button>
+                                </div>
+                            </div>
+              </div>
+            
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+          <script>
+              //var name = '';
+           $(function(){
+                $("#addClass").click(function () {
+                          $('#qnimate').addClass('chat-box-on');
+                                name = prompt('What is your name');
+                                $('#window_name').text(name);
+                            });
+                          
+                            $("#removeClass").click(function () {
+                          $('#qnimate').removeClass('chat-box-on');
+                            });
+                  })
+          
+           var HOST = location.origin.replace(/^http/, 'ws')
+      var sock = new WebSocket(HOST);
+     
+               
+        
+                  var HOST = location.origin.replace(/^http/, 'ws')
+                     var sock = new WebSocket(HOST);
+                
+                sock.onopen = function(){
+                    sock.send(JSON.stringify({
+                        type:'name',
+                        data:name
+                    }))
+                }
+        
+        
+               /*sock.onopen = function(event){
+                   alert("Socket connected successfully");
+                   setTimeout(function(){
+                       sock.send("hey there")
+                   }, 1000);
+               };*/
+
+               var log = document.getElementById('log');
+
+               sock.onmessage = function(event){
+                   console.log(event);
+                   var json = JSON.parse(event.data);
+
+                   var completeMsg = document.createElement('div');
+                   completeMsg.setAttribute('class','direct-chat-messages');
+
+                    var dateDiv = document.createElement('div');
+                    dateDiv.setAttribute('class','chat-box-single-line');
+
+                     var dateMsg = document.createElement('abbr');
+                    dateMsg.setAttribute('class','timestamp');
+                    dateMsg.textContent = new Date().toJSON().slice(0,10);
+
+                    dateDiv.appendChild(dateMsg);
+                    completeMsg.appendChild(dateDiv);
+
+                    var mainDataDiv = document.createElement('div');
+                    mainDataDiv.setAttribute('class','direct-chat-msg doted-border');
+
+                   
+
+                    var nameDiv = document.createElement('div');
+                    nameDiv.setAttribute('class','direct-chat-info clearfix');
+                   // nameDiv.innerHTML += json.name;
+                   nameDiv.textContent = json.name;
+
+                    mainDataDiv.appendChild(nameDiv);
+
+                    var msgDiv = document.createElement('div');
+                    msgDiv.setAttribute('class','direct-chat-text');
+                    //messageDiv.innerHTML += json.data;
+                    msgDiv.textContent = json.data;
+                     mainDataDiv.appendChild(msgDiv);
+
+                    var timeDiv = document.createElement('div');
+                    timeDiv.setAttribute('class','direct-chat-timestamp pull-right');
+
+                     mainDataDiv.appendChild(timeDiv);
+
+                      completeMsg.appendChild(mainDataDiv);
+                      log.appendChild(completeMsg);
+                                             
+                  
+               }
+        
+        
+               document.getElementById('msgSend').onclick = function(){
+                var text = document.getElementById('status_message').value;   
+                //sock.send(text);
+                sock.send(JSON.stringify({
+                    type:'message',
+                    data:text
+                }));
+
+
+                  var completeMsg1 = document.createElement('div');
+                   completeMsg1.setAttribute('class','direct-chat-messages');
+
+                    var dateDiv1 = document.createElement('div');
+                    dateDiv1.setAttribute('class','chat-box-single-line');
+
+                     var dateMsg1 = document.createElement('abbr');
+                    dateMsg1.setAttribute('class','timestamp');
+
+                    dateDiv1.appendChild(dateMsg1);
+                    completeMsg1.appendChild(dateDiv1);
+
+                    var mainDataDiv1 = document.createElement('div');
+                    mainDataDiv1.setAttribute('class','direct-chat-msg doted-border');
+
+                   
+
+                    var nameDiv1 = document.createElement('div');
+                    nameDiv1.setAttribute('class','direct-chat-info clearfix');
+                   // nameDiv.innerHTML += json.name;
+                   nameDiv1.textContent = 'you: ';
+
+                    mainDataDiv1.appendChild(nameDiv1);
+
+                    var msgDiv1 = document.createElement('div');
+                    msgDiv1.setAttribute('class','direct-chat-text');
+                    //messageDiv.innerHTML += json.data;
+                    msgDiv1.textContent = text;
+                     mainDataDiv1.appendChild(msgDiv1);
+
+                    var timeDiv1 = document.createElement('div');
+                    timeDiv1.setAttribute('class','direct-chat-timestamp pull-right');
+
+                     mainDataDiv1.appendChild(timeDiv1);
+
+                      completeMsg1.appendChild(mainDataDiv1);
+                      log.appendChild(completeMsg1);
+                
+               // nameDiv.innerHTML += 'you: ';
+                //messageDiv.innerHTML += text;
+                
+               };
+            
+            
+          </script>
+          </body>
+          </html>
